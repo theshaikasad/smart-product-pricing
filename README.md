@@ -4,7 +4,7 @@
 
 Built by **Team Spotless** for the **Amazon ML Challenge 2025** (Smart Product Pricing track). The model fuses a product's catalog text and photo through a gated cross-attention network to predict its price, reaching a **validation MSAPE of 37.21** with its stacked ensemble.
 
-**[▶ Try the live demo](https://huggingface.co/spaces/theshaikasad/smart-product-pricing)** · [Dataset (Kaggle)](https://www.kaggle.com/datasets/suvroo/amazon-ml) · [Solution writeup (PDF)](docs/AMAZON_ML.pdf)
+**[▶ Try the live demo](https://theshaikasad--smart-product-pricing.modal.run)** · [Dataset (Kaggle)](https://www.kaggle.com/datasets/suvroo/amazon-ml) · [Solution writeup (PDF)](docs/AMAZON_ML.pdf)
 
 ![Smart Product Pricing web app](docs/screenshot.png)
 
@@ -65,7 +65,8 @@ flowchart LR
 │   └── upload_artifacts.py         # pushes weights to the HF Hub
 ├── notebooks/EnsembleMethod.ipynb  # original competition notebook
 ├── docs/AMAZON_ML.pdf              # solution writeup
-└── Dockerfile                      # Hugging Face Space (Docker SDK)
+├── modal_app.py                    # serverless deployment (Modal)
+└── Dockerfile                      # container deployment (any Docker host)
 ```
 
 ## Run it locally
@@ -108,7 +109,7 @@ python scripts/train_ensemble.py --train-csv train_combined.csv --test-csv test_
 
 ## Tech stack
 
-PyTorch · OpenCLIP · scikit-learn · FastAPI · vanilla JS — deployed as a Docker Space on Hugging Face, weights on the [HF Hub](https://huggingface.co/theshaikasad/smart-product-pricing-artifacts).
+PyTorch · OpenCLIP · scikit-learn · FastAPI · vanilla JS — deployed serverlessly on [Modal](https://modal.com) (`modal deploy modal_app.py`), weights on the [HF Hub](https://huggingface.co/theshaikasad/smart-product-pricing-artifacts). A `Dockerfile` is included for any container host.
 
 ## Team Spotless
 
