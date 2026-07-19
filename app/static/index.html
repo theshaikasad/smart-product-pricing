@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Product Pricing — Multimodal Price Prediction</title>
+  <meta name="description" content="Paste an Amazon-style product listing and a multimodal neural network appraises its price. Amazon ML Challenge 2025 — Team Spotless." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏷️</text></svg>" />
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="masthead">
+    <div class="wordmark">
+      <span class="wordmark-tag">🏷️</span>
+      <div>
+        <h1>Smart Product Pricing</h1>
+        <p class="tagline">a multimodal neural appraiser · Amazon ML Challenge 2025</p>
+      </div>
+    </div>
+    <nav class="masthead-links">
+      <a href="https://github.com/theshaikasad/smart-product-pricing" target="_blank" rel="noopener">GitHub&nbsp;↗</a>
+      <a href="https://www.kaggle.com/datasets/suvroo/amazon-ml" target="_blank" rel="noopener">Dataset&nbsp;↗</a>
+    </nav>
+  </header>
+
+  <main class="ledger">
+    <!-- ============ INPUT PANEL ============ -->
+    <section class="panel panel-input" aria-labelledby="input-heading">
+      <div class="panel-rule">
+        <h2 id="input-heading">Product intake form</h2>
+        <span class="form-no">FORM № 512-D</span>
+      </div>
+
+      <label class="field">
+        <span class="field-label">Catalog listing <em>— paste the product text</em></span>
+        <textarea id="text-input" rows="8" spellcheck="false"
+          placeholder="Item Name: Member's Mark Basil, 6.25 oz&#10;Bullet Point 1: Green Herb, Italian Staple&#10;Value: 6.25&#10;Unit: ounce"></textarea>
+      </label>
+
+      <label class="field">
+        <span class="field-label">Image URL <em>— optional, improves the appraisal</em></span>
+        <div class="url-row">
+          <input id="image-input" type="url" spellcheck="false" placeholder="https://m.media-amazon.com/images/I/…" />
+          <div class="thumb" id="thumb" hidden><img id="thumb-img" alt="Product preview" /></div>
+        </div>
+      </label>
+
+      <button id="predict-btn" class="stamp-btn" type="button">
+        <span class="stamp-btn-label">Appraise&nbsp;this&nbsp;product</span>
+      </button>
+
+      <div class="examples">
+        <p class="examples-label">Or try a real listing from the dataset:</p>
+        <div class="example-chips" id="example-chips"></div>
+      </div>
+    </section>
+
+    <!-- ============ PRICE TAG ============ -->
+    <section class="tag-column" aria-labelledby="result-heading">
+      <div class="price-tag" id="price-tag">
+        <div class="tag-hole" aria-hidden="true"></div>
+        <h2 id="result-heading" class="tag-heading">Appraised value</h2>
+
+        <div class="tag-body">
+          <div id="tag-idle" class="tag-state">
+            <p class="tag-idle-mark">$&hairsp;—</p>
+            <p class="tag-idle-note">awaiting appraisal</p>
+          </div>
+
+          <div id="tag-loading" class="tag-state" hidden>
+            <p class="tag-loading-text">APPRAISING<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+          </div>
+
+          <div id="tag-result" class="tag-state" hidden>
+            <p class="tag-price" id="tag-price">$0.00</p>
+            <p class="tag-actual" id="tag-actual" hidden></p>
+            <dl class="tag-meta">
+              <div><dt>log-price</dt><dd id="meta-log">—</dd></div>
+              <div><dt>image signal</dt><dd id="meta-image">—</dd></div>
+              <div><dt>latency</dt><dd id="meta-latency">—</dd></div>
+            </dl>
+          </div>
+
+          <div id="tag-error" class="tag-state" hidden>
+            <p class="tag-error-text" id="tag-error-text">Something went wrong.</p>
+          </div>
+        </div>
+
+        <div class="barcode" aria-hidden="true">
+          <div class="bars"></div>
+          <span class="barcode-no">SPOTLESS·2025·MSAPE·37.21</span>
+        </div>
+      </div>
+
+      <aside class="model-note">
+        <h3>How the appraisal works</h3>
+        <ol>
+          <li><b>Encode</b> — the listing text and product photo become 512-d embeddings (OpenCLIP ViT-B/32).</li>
+          <li><b>Fuse</b> — a gated cross-attention network with SE residual blocks joins both signals.</li>
+          <li><b>Regress</b> — the head predicts log-price; <code>expm1</code> recovers dollars.</li>
+        </ol>
+        <p class="model-note-fine">Trained on 75k+ Amazon grocery listings · validation MSAPE 44.4 (single model) / 37.2 (stacked ensemble)</p>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="colophon">
+    <p><b>Team Spotless</b> — Shaik Mohammed Asad · Akshat Dubey · K. Senthur Kumaran · VIT University</p>
+    <p>PyTorch · OpenCLIP · FastAPI — <a href="https://github.com/theshaikasad/smart-product-pricing" target="_blank" rel="noopener">read the code</a></p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

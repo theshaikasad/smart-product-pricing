@@ -1,0 +1,473 @@
+/* ============================================================
+   Smart Product Pricing — "The Appraiser's Ledger"
+   Cream paper, ledger ink, money-green stamps.
+   ============================================================ */
+
+:root {
+  --paper: #f2ecdd;
+  --paper-raised: #faf6ec;
+  --paper-deep: #e7dfc9;
+  --ink: #211f17;
+  --ink-soft: #57523f;
+  --ink-faint: #8d8670;
+  --green: #17604226;
+  --money: #14603f;
+  --money-bright: #1c7a52;
+  --stamp-red: #a83428;
+  --rule: #c9bfa4;
+  --serif: "Fraunces", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--mono);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.55;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* paper grain over everything */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* faint ledger lines in the page background */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    repeating-linear-gradient(transparent 0 31px, #cfc6ab33 31px 32px),
+    linear-gradient(180deg, #f5f0e2, var(--paper) 240px);
+}
+
+/* ---------------- masthead ---------------- */
+
+.masthead {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2.2rem 1.5rem 1.4rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 3px double var(--ink);
+}
+
+.wordmark { display: flex; align-items: center; gap: 0.9rem; }
+
+.wordmark-tag {
+  font-size: 2.4rem;
+  transform: rotate(-8deg);
+  filter: sepia(0.3);
+}
+
+.masthead h1 {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.tagline {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  margin-top: 0.35rem;
+  letter-spacing: 0.04em;
+}
+
+.masthead-links { display: flex; gap: 1.4rem; padding-bottom: 0.3rem; }
+
+.masthead-links a {
+  color: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.masthead-links a:hover { color: var(--money); border-color: var(--money); }
+
+/* ---------------- layout ---------------- */
+
+.ledger {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2.4rem 1.5rem 3rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 2.6rem;
+  align-items: start;
+}
+
+/* ---------------- input panel ---------------- */
+
+.panel-input {
+  background: var(--paper-raised);
+  border: 1.5px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--paper-deep), 5.5px 5.5px 0 var(--ink);
+  padding: 1.8rem 1.9rem 2rem;
+}
+
+.panel-rule {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1.5px solid var(--ink);
+  padding-bottom: 0.7rem;
+  margin-bottom: 1.5rem;
+}
+
+.panel-rule h2 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: 0.01em;
+}
+
+.form-no {
+  font-size: 0.68rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.14em;
+}
+
+.field { display: block; margin-bottom: 1.3rem; }
+
+.field-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.5rem;
+}
+
+.field-label em {
+  font-style: normal;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--ink-faint);
+}
+
+textarea, input[type="url"] {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: #fffdf6;
+  border: 1.5px solid var(--rule);
+  padding: 0.75rem 0.85rem;
+  resize: vertical;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+textarea:focus, input[type="url"]:focus {
+  outline: none;
+  border-color: var(--money);
+  box-shadow: 0 0 0 3px var(--green);
+}
+
+textarea::placeholder, input::placeholder { color: #b3ac95; }
+
+.url-row { display: flex; gap: 0.7rem; align-items: center; }
+.url-row input { flex: 1; }
+
+.thumb {
+  width: 52px;
+  height: 52px;
+  border: 1.5px solid var(--rule);
+  background: #fffdf6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.thumb img { width: 100%; height: 100%; object-fit: contain; }
+
+/* the big stamp button */
+.stamp-btn {
+  width: 100%;
+  margin-top: 0.4rem;
+  padding: 0.95rem;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  color: var(--paper-raised);
+  background: var(--money);
+  border: 1.5px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+  transition: transform 0.08s, box-shadow 0.08s, background 0.15s;
+}
+
+.stamp-btn:hover { background: var(--money-bright); }
+
+.stamp-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+.stamp-btn:disabled {
+  background: var(--ink-faint);
+  cursor: wait;
+  transform: none;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+/* examples */
+.examples { margin-top: 1.7rem; }
+
+.examples-label { font-size: 0.75rem; color: var(--ink-soft); margin-bottom: 0.6rem; }
+
+.example-chips { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+
+.chip {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  padding: 0.42rem 0.7rem;
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px dashed var(--ink-faint);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.chip:hover {
+  border-style: solid;
+  border-color: var(--money);
+  color: var(--money);
+  background: #17604211;
+}
+
+.chip b { font-weight: 600; }
+
+/* ---------------- price tag ---------------- */
+
+.tag-column { display: flex; flex-direction: column; gap: 1.6rem; position: sticky; top: 1.5rem; }
+
+.price-tag {
+  position: relative;
+  background: var(--paper-raised);
+  border: 1.5px solid var(--ink);
+  box-shadow: 5px 5px 0 var(--paper-deep), 5.5px 5.5px 0 var(--ink);
+  padding: 2rem 1.8rem 0;
+  transform: rotate(0.6deg);
+  /* clipped corner like a swing tag */
+  clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 26px, 100% 100%, 0 100%);
+}
+
+.tag-hole {
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  box-shadow: inset 1px 1px 2px #00000022;
+}
+
+.tag-heading {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-soft);
+  border-bottom: 1.5px solid var(--rule);
+  padding-bottom: 0.6rem;
+}
+
+.tag-body {
+  min-height: 210px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem 0;
+}
+
+.tag-state { text-align: center; width: 100%; }
+
+/* idle */
+.tag-idle-mark {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 4rem;
+  color: var(--paper-deep);
+  -webkit-text-stroke: 1.5px var(--ink-faint);
+}
+
+.tag-idle-note { font-size: 0.72rem; color: var(--ink-faint); letter-spacing: 0.1em; }
+
+/* loading */
+.tag-loading-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: var(--money);
+  animation: flicker 1.4s infinite;
+}
+
+.dots span {
+  animation: dotblink 1.2s infinite;
+}
+.dots span:nth-child(2) { animation-delay: 0.2s; }
+.dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotblink { 0%, 60% { opacity: 0; } 30% { opacity: 1; } }
+@keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.65; } }
+
+/* result — the stamped price */
+.tag-price {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: clamp(3rem, 6vw, 4.3rem);
+  line-height: 1;
+  color: var(--money);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  transform: rotate(-2.5deg);
+  text-shadow: 1px 1px 0 #14603f22;
+  animation: stamp 0.38s cubic-bezier(0.2, 1.6, 0.35, 1);
+}
+
+@keyframes stamp {
+  0% { transform: rotate(-9deg) scale(1.9); opacity: 0; }
+  55% { transform: rotate(-1.5deg) scale(0.96); opacity: 1; }
+  100% { transform: rotate(-2.5deg) scale(1); }
+}
+
+.tag-actual {
+  margin-top: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+
+.tag-actual b { color: var(--stamp-red); }
+
+.tag-meta {
+  display: flex;
+  justify-content: center;
+  gap: 1.8rem;
+  margin-top: 1.4rem;
+  padding-top: 1rem;
+  border-top: 1.5px dashed var(--rule);
+}
+
+.tag-meta div { text-align: center; }
+
+.tag-meta dt {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+}
+
+.tag-meta dd { font-size: 0.82rem; font-weight: 600; margin-top: 0.15rem; }
+
+/* error */
+.tag-error-text {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--stamp-red);
+  border: 2px solid var(--stamp-red);
+  padding: 0.6rem 1rem;
+  transform: rotate(-2deg);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* barcode footer of the tag */
+.barcode {
+  border-top: 1.5px solid var(--ink);
+  margin: 0 -1.8rem;
+  padding: 0.9rem 1.8rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.bars {
+  height: 26px;
+  flex: 1;
+  background: repeating-linear-gradient(90deg,
+    var(--ink) 0 2px, transparent 2px 4px,
+    var(--ink) 4px 7px, transparent 7px 9px,
+    var(--ink) 9px 10px, transparent 10px 14px,
+    var(--ink) 14px 16px, transparent 16px 17px,
+    var(--ink) 17px 21px, transparent 21px 25px);
+}
+
+.barcode-no { font-size: 0.6rem; letter-spacing: 0.14em; color: var(--ink-soft); white-space: nowrap; }
+
+/* ---------------- model note ---------------- */
+
+.model-note {
+  border: 1.5px dashed var(--ink-faint);
+  padding: 1.3rem 1.5rem;
+  background: #faf6ec88;
+}
+
+.model-note h3 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.model-note ol { padding-left: 1.2rem; font-size: 0.78rem; color: var(--ink-soft); }
+.model-note li { margin-bottom: 0.45rem; }
+.model-note b { color: var(--ink); }
+.model-note code { font-size: 0.72rem; background: var(--paper-deep); padding: 0.05rem 0.3rem; }
+
+.model-note-fine {
+  margin-top: 0.8rem;
+  font-size: 0.66rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
+}
+
+/* ---------------- colophon ---------------- */
+
+.colophon {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1.4rem 1.5rem 2.4rem;
+  border-top: 3px double var(--ink);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+}
+
+.colophon a { color: var(--money); font-weight: 600; }
+
+/* ---------------- responsive ---------------- */
+
+@media (max-width: 860px) {
+  .ledger { grid-template-columns: 1fr; gap: 2rem; }
+  .tag-column { position: static; }
+  .masthead { flex-direction: column; align-items: flex-start; }
+}
