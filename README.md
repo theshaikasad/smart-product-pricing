@@ -2,7 +2,7 @@
 
 **A multimodal neural network that appraises Amazon products — paste a listing, get a price.**
 
-Built by **Team Spotless** for the **Amazon ML Challenge 2025** (Smart Product Pricing track). The model fuses a product's catalog text and photo through a gated cross-attention network to predict its price, reaching a **validation MSAPE of 37.21** with its stacked ensemble.
+Built for the **Amazon ML Challenge 2025** (Smart Product Pricing track). The model fuses a product's catalog text and photo through a gated cross-attention network to predict its price, reaching a **validation MSAPE of 37.21** with its stacked ensemble.
 
 **[▶ Try the live demo](https://shaikasad17--smart-product-pricing.modal.run)** · [Dataset (Kaggle)](https://www.kaggle.com/datasets/suvroo/amazon-ml) · [Solution writeup (PDF)](docs/AMAZON_ML.pdf)
 
@@ -111,9 +111,9 @@ python scripts/train_ensemble.py --train-csv train_combined.csv --test-csv test_
 
 PyTorch · OpenCLIP · scikit-learn · FastAPI · vanilla JS — deployed serverlessly on [Modal](https://modal.com) (`modal deploy modal_app.py`), weights on the [HF Hub](https://huggingface.co/theshaikasad/smart-product-pricing-artifacts). A `Dockerfile` is included for any container host.
 
-## Team Spotless
+## Author
 
-[Shaik Mohammed Asad](https://github.com/theshaikasad) · Akshat Dubey · K. Senthur Kumaran — VIT University, Amazon ML Challenge 2025.
+[Shaik Mohammed Asad](https://github.com/theshaikasad) — VIT University, Amazon ML Challenge 2025.
 
 ## License
 
