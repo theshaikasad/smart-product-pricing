@@ -4,7 +4,7 @@
 
 Built by **Team Spotless** for the **Amazon ML Challenge 2025** (Smart Product Pricing track). The model fuses a product's catalog text and photo through a gated cross-attention network to predict its price, reaching a **validation MSAPE of 37.21** with its stacked ensemble.
 
-**[▶ Try the live demo](https://theshaikasad--smart-product-pricing.modal.run)** · [Dataset (Kaggle)](https://www.kaggle.com/datasets/suvroo/amazon-ml) · [Solution writeup (PDF)](docs/AMAZON_ML.pdf)
+**[▶ Try the live demo](https://shaikasad17--smart-product-pricing.modal.run)** · [Dataset (Kaggle)](https://www.kaggle.com/datasets/suvroo/amazon-ml) · [Solution writeup (PDF)](docs/AMAZON_ML.pdf)
 
 ![Smart Product Pricing web app](docs/screenshot.png)
 
