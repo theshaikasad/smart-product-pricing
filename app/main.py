@@ -1,5 +1,7 @@
 """FastAPI server: serves the frontend and the prediction API."""
 
+import base64
+import binascii
 import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -30,9 +32,17 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Smart Product Pricing", lifespan=lifespan)
 
 
+MAX_IMAGE_BYTES = 8 * 1024 * 1024
+
+
 class PredictRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=5000, description="Product catalog text")
     image_url: str | None = Field(None, max_length=2000, description="Optional product image URL")
+    image_b64: str | None = Field(
+        None,
+        max_length=11_500_000,  # ~8MB after base64 expansion
+        description="Optional uploaded image as base64 (raw or data: URL); takes precedence over image_url",
+    )
 
 
 class PredictResponse(BaseModel):
@@ -54,7 +64,17 @@ def predict(req: PredictRequest):
     if not req.text.strip():
         raise HTTPException(status_code=422, detail="Product text must not be empty")
 
-    result = predictor.predict(req.text, req.image_url or None)
+    image_bytes = None
+    if req.image_b64:
+        payload = req.image_b64.split(",", 1)[-1]  # tolerate data: URL prefixes
+        try:
+            image_bytes = base64.b64decode(payload, validate=True)
+        except binascii.Error:
+            raise HTTPException(status_code=422, detail="Uploaded image is not valid base64")
+        if len(image_bytes) > MAX_IMAGE_BYTES:
+            raise HTTPException(status_code=422, detail="Uploaded image exceeds 8 MB")
+
+    result = predictor.predict(req.text, req.image_url or None, image_bytes)
     return PredictResponse(
         price=round(result.price, 2),
         log_price=result.log_price,

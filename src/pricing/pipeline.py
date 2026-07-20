@@ -47,16 +47,22 @@ class PricePredictor:
         self.predict("warmup", None)
 
     @torch.no_grad()
-    def predict(self, text: str, image_url: str | None = None) -> Prediction:
+    def predict(
+        self,
+        text: str,
+        image_url: str | None = None,
+        image_bytes: bytes | None = None,
+    ) -> Prediction:
         start = time.perf_counter()
 
         txt_vec = encoders.encode_text(text)
 
-        image_used = False
         img_vec = None
-        if image_url:
+        if image_bytes:
+            img_vec = encoders.encode_image_bytes(image_bytes)
+        elif image_url:
             img_vec = encoders.encode_image_from_url(image_url)
-            image_used = img_vec is not None
+        image_used = img_vec is not None
         if img_vec is None:
             # Training zero-filled missing image embeddings; do the same here.
             img_vec = np.zeros(self.config["dim_img"], dtype=np.float32)

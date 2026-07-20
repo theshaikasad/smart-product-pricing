@@ -49,13 +49,20 @@ def encode_image(image: Image.Image) -> np.ndarray:
     return feats[0].numpy().astype(np.float32)
 
 
-def encode_image_from_url(url: str) -> np.ndarray | None:
-    """Download and encode a product image; None on any failure (the caller
+def encode_image_bytes(data: bytes) -> np.ndarray | None:
+    """Encode raw image bytes; None if they can't be decoded (the caller
     zero-fills, matching how training handled failed downloads)."""
+    try:
+        return encode_image(Image.open(io.BytesIO(data)))
+    except Exception:
+        return None
+
+
+def encode_image_from_url(url: str) -> np.ndarray | None:
+    """Download and encode a product image; None on any failure."""
     try:
         resp = requests.get(url, timeout=IMAGE_TIMEOUT_S, headers={"User-Agent": _USER_AGENT})
         resp.raise_for_status()
-        image = Image.open(io.BytesIO(resp.content))
-        return encode_image(image)
+        return encode_image_bytes(resp.content)
     except Exception:
         return None
